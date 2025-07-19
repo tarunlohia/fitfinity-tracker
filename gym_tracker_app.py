@@ -21,7 +21,6 @@ def get_worksheet():
         creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
         creds.refresh(Request())
         client = gspread.authorize(creds)
-
         sheet = client.open_by_key(SHEET_ID)
         members_ws = sheet.worksheet(MEMBERS_TAB)
         renewals_ws = sheet.worksheet(RENEWALS_TAB)
@@ -108,3 +107,124 @@ st.markdown("""<style>
         font-size: 16px;
     }
 </style>""", unsafe_allow_html=True)
+
+# ---------------- MAIN UI ----------------
+tab1, tab2 = st.tabs(["\U0001F4CA Dashboard", "\u2795 Add / Renew"])
+
+with tab1:
+    st.header("Member Summary")
+    df = load_data()
+
+    if df.empty:
+        st.info("No member data available.")
+    else:
+        df["Status"] = df["End Date"].dt.date.apply(get_status)
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("\u2705 Active Members", df[df["Status"] == "Active"].shape[0])
+        col2.metric("\u26A0\uFE0F Expiring Soon", df[df["Status"] == "Expiring Soon"].shape[0])
+        col3.metric("\u274C Expired", df[df["Status"] == "Expired"].shape[0])
+
+        with st.expander("\U0001F4CB Full Member List"):
+            df_display = df.copy()
+            date_cols = ["Start Date", "End Date", "Renewed On"]
+            for col in date_cols:
+                df_display[col] = df_display[col].dt.strftime('%d-%b-%Y')
+            st.dataframe(df_display)
+
+        st.subheader("\U0001F50D Search Member")
+        search_query = st.text_input("Enter Member ID, Name or Phone")
+
+        if search_query:
+            search_result = df[
+                df.apply(lambda row: search_query.lower() in str(row["Member ID"]).lower()
+                                        or search_query.lower() in row["Name"].lower()
+                                        or search_query.lower() in str(row["Phone"]).lower(), axis=1)
+            ]
+
+            if not search_result.empty:
+                for _, row in search_result.iterrows():
+                    with st.expander(f"\U0001F464 {row['Name']} - ID: {row['Member ID']}"):
+                        st.markdown(f"**Phone:** {row['Phone']}")
+                        st.markdown(f"**Start Date:** {row['Start Date'].strftime('%d-%b-%Y') if pd.notnull(row['Start Date']) else 'N/A'}")
+                        st.markdown(f"**End Date:** {row['End Date'].strftime('%d-%b-%Y') if pd.notnull(row['End Date']) else 'N/A'}")
+                        st.markdown(f"**Status:** {row['Status']}")
+                        st.markdown(f"**Renewed On:** {row['Renewed On'].strftime('%d-%b-%Y') if pd.notnull(row['Renewed On']) else 'N/A'}")
+
+                        st.markdown("---")
+                        st.markdown("### \u270F\uFE0F Edit Member")
+                        field = st.selectbox("Select field to edit", ["Name", "Phone", "Start Date", "End Date", "Duration"], key=f"edit_{row['Member ID']}")
+                        new_value = st.text_input("Enter new value", key=f"val_{row['Member ID']}")
+                        if st.button(f"Update {field} for {row['Name']}", key=f"update_{row['Member ID']}"):
+                            if update_member(row['Member ID'], field, new_value):
+                                st.success("Member updated successfully!")
+                            else:
+                                st.error("Failed to update member.")
+
+                        st.markdown("### \U0001F5D1\uFE0F Delete Member")
+                        if st.button(f"Delete Member {row['Name']}", key=f"delete_{row['Member ID']}"):
+                            if delete_member(row['Member ID']):
+                                st.success("Member deleted successfully!")
+                            else:
+                                st.error("Failed to delete member.")
+            else:
+                st.warning("No matching member found.")
+
+with tab2:
+    option = st.radio("Choose action", ["New Member", "Renew Membership"])
+
+    if option == "New Member":
+        st.subheader("\u2795 Add New Member")
+        name = st.text_input("Name")
+        phone = st.text_input("Phone")
+        start_date = st.date_input("Start Date", datetime.today())
+        duration = st.selectbox("Duration", ["3 Months", "6 Months", "12 Months"])
+
+        if st.button("Add Member"):
+            if not name or not phone:
+                st.warning("Please enter all required fields.")
+            else:
+                months = int(duration.split()[0])
+                end_date = start_date + pd.DateOffset(months=months)
+                status = get_status(end_date.date())
+                df_existing = load_data()
+                member_id = 101 if df_existing.empty else int(df_existing["Member ID"].max()) + 1
+                row = [member_id, name, phone, start_date.strftime('%d-%b-%Y'), duration,
+                       end_date.strftime('%d-%b-%Y'), status, "", ""]
+                save_member(row)
+                st.success("Member added successfully!")
+
+    else:
+        st.subheader("\U0001F501 Renew Membership")
+        df = load_data()
+        names = df["Name"].tolist()
+        selected_name = st.selectbox("Select Member", names)
+
+        if selected_name:
+            member_row = df[df["Name"] == selected_name].iloc[0]
+            st.write(f"Current End Date: {member_row['End Date'].strftime('%d-%b-%Y') if pd.notnull(member_row['End Date']) else 'N/A'}")
+
+            renewal_date = st.date_input("Renewal Date", datetime.today())
+            renewal_duration = st.selectbox("Renewal Duration", ["3 Months", "6 Months", "12 Months"])
+
+            if st.button("Renew Membership"):
+                months = int(renewal_duration.split()[0])
+                new_end_date = renewal_date + pd.DateOffset(months=months)
+                status = get_status(new_end_date.date())
+                renew_row = [
+                    str(member_row["Member ID"]), selected_name, member_row["Phone"],
+                    renewal_date.strftime('%d-%b-%Y'), renewal_date.strftime('%d-%b-%Y'),
+                    renewal_duration, new_end_date.strftime('%d-%b-%Y'), ""
+                ]
+                save_renewal(renew_row)
+
+                members = members_ws.get_all_records()
+                for idx, mem in enumerate(members):
+                    if mem["Name"] == selected_name:
+                        members_ws.update_cell(idx + 2, 4, renewal_date.strftime('%d-%b-%Y'))
+                        members_ws.update_cell(idx + 2, 5, renewal_duration)
+                        members_ws.update_cell(idx + 2, 6, new_end_date.strftime('%d-%b-%Y'))
+                        members_ws.update_cell(idx + 2, 7, status)
+                        members_ws.update_cell(idx + 2, 8, renewal_date.strftime('%d-%b-%Y'))
+                        break
+                st.success("Membership renewed successfully!")
