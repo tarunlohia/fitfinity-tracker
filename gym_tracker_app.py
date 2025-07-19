@@ -11,20 +11,28 @@ SHEET_ID = "1t6L2WkMQJwz9HTaMiyGqTwinuc1v2EWtUMqJlNPmoYc"
 MEMBERS_TAB = "Current Members"
 RENEWALS_TAB = "Renewal History"
 
-# Use credentials from Streamlit Secrets
 scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-creds_dict = json.loads(st.secrets["google"]["creds"])
-creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
-client = gspread.authorize(creds)
 
 @st.cache_resource(show_spinner=False)
 def get_worksheet():
-    sheet = client.open_by_key(SHEET_ID)
-    members_ws = sheet.worksheet(MEMBERS_TAB)
-    renewals_ws = sheet.worksheet(RENEWALS_TAB)
-    return members_ws, renewals_ws
+    try:
+        creds_dict = json.loads(st.secrets["google"]["creds"])
+        creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+        creds.refresh(Request())
+        client = gspread.authorize(creds)
+
+        sheet = client.open_by_key(SHEET_ID)
+        members_ws = sheet.worksheet(MEMBERS_TAB)
+        renewals_ws = sheet.worksheet(RENEWALS_TAB)
+        return members_ws, renewals_ws
+    except Exception as e:
+        st.error(f"❌ Failed to authorize or connect to Google Sheets: {e}")
+        return None, None
 
 members_ws, renewals_ws = get_worksheet()
+
+if not members_ws or not renewals_ws:
+    st.stop()
 
 # ---------------- UTILITY FUNCTIONS ----------------
 def load_data():
@@ -75,7 +83,7 @@ def load_base64_image(image_path):
     with open(image_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-image_path = "d74072e2-84e6-4aec-b17e-feb6fb563480.png"
+image_path = "logo.jpg"
 image_base64 = load_base64_image(image_path)
 
 st.markdown(f'''
@@ -99,5 +107,3 @@ st.markdown("""<style>
         font-size: 16px;
     }
 </style>""", unsafe_allow_html=True)
-
-# ✅ You can now copy this entire code and replace it in GitHub directly.
