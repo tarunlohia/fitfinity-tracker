@@ -73,7 +73,7 @@ def load_base64_image(image_path):
         data = f.read()
         return base64.b64encode(data).decode()
 
-image_path = "d74072e2-84e6-4aec-b17e-feb6fb563480.png"
+image_path = "logo.jpg"
 image_base64 = load_base64_image(image_path)
 
 st.markdown(f'''
