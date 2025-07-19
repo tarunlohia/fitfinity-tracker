@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "gym-tracker-466115",
+  "private_key_id": "7aa917d7e85f12fac2de82113b1cbbb574611098",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEugIBADANBgkqhkiG9w0BAQEFAASCBKQwggSgAgEAAoIBAQDKEU0E6WwnXIGh\nz8g47CRCwPm1yMpzj+TzpBfTwUDyUsIJU8vGnmp/mTt3blE3WqP7Y+ZhD5OMBISU\nUwxWC4TJD2UanecQAYHxdh9NxvqfEaYJZwSTjQMVPohzR8CJmUmC6JENjAr273iT\nxWWP3QXqx63Qfq2Kj8UHHcRHAW/bU8S2wi+PzKYZ6DTXe5/DdSk6xjNXtHhbX9rU\nAfzIlipiznvvmvlB5sPNf7VO1+2icGXUiO9j5wXltCWF0nG/S9+1CqRJ+RDoLeDD\nyFeZw5uFqmGOzOT9MAKRXBZbTMl5qs1wy+GGB1c9cl6tU33ufz/8n5desXvM8I5j\nObaJ0taNAgMBAAECggEAA84Dlz4V7T/OqQ9Sg8/edutPSF75gOeKthO25yPSZz2r\nraVIRvsgojpuZjdLjDFGuSsOYXF7o71KCcjuiIg6/dYuXyvt990vZy6ENGC0w13/\ntFmeOnEDR9kflJwbQfwC6FYctRaX9kJYEOA8o1LUE7Gi0jQwbFV8rj+fPH8IbibD\nCW03jY8LUYlxLLHi6b3hvmPhoUmX7RdXLU4FrKYyXit+1KOqQsI0khImlFnqS0r6\nLHL/iPdPoJC3zYJgfuuxbD2mm+0oEkYYIOW6CyoIyuwoAe9zeZbC4Oj7mNN+EyGw\nQ6ub9/+PySqQAl8W+cFbm/I0k4uWAtvewTjKsle/uQKBgQD5c+3o5/0zpAlWx42x\n/YTyESNMamQT3ABdjL08rt/zZSSj35WhJ7wf9VYXAXoRMQ3EA00WGTtkgqgoo8Au\nVt+IHjjby4lOXAtN1R4i+Cw2gqqoyeqiv4dJflQkIvsoZgU5/qt/nOfygmG0l708\nqqXg40bFl3LeGFevy3dqQ4mKFwKBgQDPXv2QWUSvVO9Q9tCNLRYUQPL5xTqQwEBQ\nv8JD5x6PtKrhk9wUzHtFmjDzq3LjPurVYp/YeCKWNb/7l1mgfl/S1NVXT5mqmcrx\nvbxENoc41SlvT5OMS01Yd+IVhu0IrMxJuYRzaxZPa1R3RX0Usbs2/z78kNuLW2p6\nyaRw91xe+wKBgETOalgs7VV6MK1EG9x1nl8axQ7F5dbofx1Ovb/oSJOdWW7uNBqg\nmC6EgHuWB7KIQlDHzFKFITHHLFURXegqRDwKggp2aOg5UVDlsQtaQu/COQqXr2W2\nyL1H4DObhoWNJnHpwipQAFaPCh5DIIqEU37lkdbcwG1sb3to9wZTnLN/AoGAJgFH\nwWvK3cNYNON3J1iLAl1A6qvN5veFEgeC6AT0oeu/oaYCoME1GnV+4TmbzbAbQ85W\nc0rZM+RX8hkz8OkYUMB29RB+njifbByU43+G2tCeTmssJHssirk18zIOQRfCPQTG\nFI0cwqNuEInouaE1KYgwGAPIaMrxQd2wyI9dG38Cf0VQJ6Q7Dy3CUW5CbbF/qKu0\nMf3Sik1SxDnz1hX5fSQvNxLtNu6KuVTu4Fy7djLL53n1T+pQ77BJK82wYdcPabrq\ng1levh4Efe7T3Sc2yv5Qiz1j0G6m5nmZbunFwhLmywBXVN9Ob1VlXlhxFT8WmiAY\n6uaZpWcZOnFkak4sHyo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "fitfinitygymtracker@gym-tracker-466115.iam.gserviceaccount.com",
+  "client_id": "105134056353762102865",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fitfinitygymtracker%40gym-tracker-466115.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
