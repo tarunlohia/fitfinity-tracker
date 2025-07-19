@@ -5,6 +5,7 @@ import base64
 import json
 from datetime import datetime, timedelta
 from google.oauth2.service_account import Credentials
+from google.auth.transport.requests import Request
 
 # ---------------- GOOGLE SHEET SETUP ----------------
 SHEET_ID = "1t6L2WkMQJwz9HTaMiyGqTwinuc1v2EWtUMqJlNPmoYc"
