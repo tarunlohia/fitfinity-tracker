@@ -120,25 +120,24 @@ with tab1:
     else:
         df["Status"] = df["End Date"].dt.date.apply(get_status)
 
-col1, col2, col3 = st.columns(3)
-if col1.button("✅ Active Members"):
-    st.subheader("Active Members")
-    st.dataframe(df[df["Status"] == "Active"])
-else:
-    col1.metric("✅ Active Members", df[df["Status"] == "Active"].shape[0])
+        col1, col2, col3 = st.columns(3)
+        if col1.button("✅ Active Members"):
+            st.subheader("Active Members")
+            st.dataframe(df[df["Status"] == "Active"])
+        else:
+            col1.metric("✅ Active Members", df[df["Status"] == "Active"].shape[0])
 
-if col2.button("⚠️ Expiring Soon"):
-    st.subheader("Expiring Soon")
-    st.dataframe(df[df["Status"] == "Expiring Soon"])
-else:
-    col2.metric("⚠️ Expiring Soon", df[df["Status"] == "Expiring Soon"].shape[0])
+        if col2.button("⚠️ Expiring Soon"):
+            st.subheader("Expiring Soon")
+            st.dataframe(df[df["Status"] == "Expiring Soon"])
+        else:
+            col2.metric("⚠️ Expiring Soon", df[df["Status"] == "Expiring Soon"].shape[0])
 
-if col3.button("❌ Expired"):
-    st.subheader("Expired Members")
-    st.dataframe(df[df["Status"] == "Expired"])
-else:
-    col3.metric("❌ Expired", df[df["Status"] == "Expired"].shape[0])
-
+        if col3.button("❌ Expired"):
+            st.subheader("Expired Members")
+            st.dataframe(df[df["Status"] == "Expired"])
+        else:
+            col3.metric("❌ Expired", df[df["Status"] == "Expired"].shape[0])
 
         with st.expander("\U0001F4CB Full Member List"):
             df_display = df.copy()
