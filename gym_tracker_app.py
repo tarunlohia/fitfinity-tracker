@@ -120,10 +120,25 @@ with tab1:
     else:
         df["Status"] = df["End Date"].dt.date.apply(get_status)
 
-        col1, col2, col3 = st.columns(3)
-        col1.metric("\u2705 Active Members", df[df["Status"] == "Active"].shape[0])
-        col2.metric("\u26A0\uFE0F Expiring Soon", df[df["Status"] == "Expiring Soon"].shape[0])
-        col3.metric("\u274C Expired", df[df["Status"] == "Expired"].shape[0])
+col1, col2, col3 = st.columns(3)
+if col1.button("✅ Active Members"):
+    st.subheader("Active Members")
+    st.dataframe(df[df["Status"] == "Active"])
+else:
+    col1.metric("✅ Active Members", df[df["Status"] == "Active"].shape[0])
+
+if col2.button("⚠️ Expiring Soon"):
+    st.subheader("Expiring Soon")
+    st.dataframe(df[df["Status"] == "Expiring Soon"])
+else:
+    col2.metric("⚠️ Expiring Soon", df[df["Status"] == "Expiring Soon"].shape[0])
+
+if col3.button("❌ Expired"):
+    st.subheader("Expired Members")
+    st.dataframe(df[df["Status"] == "Expired"])
+else:
+    col3.metric("❌ Expired", df[df["Status"] == "Expired"].shape[0])
+
 
         with st.expander("\U0001F4CB Full Member List"):
             df_display = df.copy()
@@ -178,7 +193,7 @@ with tab2:
         name = st.text_input("Name")
         phone = st.text_input("Phone")
         start_date = st.date_input("Start Date", datetime.today())
-        duration = st.selectbox("Duration", ["3 Months", "6 Months", "12 Months"])
+        duration = st.selectbox("Duration", ["1 Month", "2 Months", "3 Months", "6 Months", "12 Months"])
 
         if st.button("Add Member"):
             if not name or not phone:
@@ -205,7 +220,7 @@ with tab2:
             st.write(f"Current End Date: {member_row['End Date'].strftime('%d-%b-%Y') if pd.notnull(member_row['End Date']) else 'N/A'}")
 
             renewal_date = st.date_input("Renewal Date", datetime.today())
-            renewal_duration = st.selectbox("Renewal Duration", ["3 Months", "6 Months", "12 Months"])
+            renewal_duration = st.selectbox("Renewal Duration", ["1 Month", "2 Months", "3 Months", "6 Months", "12 Months"])
 
             if st.button("Renew Membership"):
                 months = int(renewal_duration.split()[0])
